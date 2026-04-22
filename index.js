@@ -3,6 +3,7 @@ require("dotenv").config(); // loads .env files into process.env by default
 const express = require("express");
 const cors = require("cors");
 const routes = require("./routes/allRoutes");
+require("./config/db");
 
 // create server using express package
 const server = express();
