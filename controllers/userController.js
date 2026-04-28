@@ -58,3 +58,38 @@ exports.loginController = async (req, res) => {
       .json("Invalid Email... Please Register to access the Bookstore!!");
   }
 };
+
+// google login
+exports.googleLoginController = async (req, res) => {
+  console.log("Inside googleLoginController");
+  const { email, password, username, picture } = req.body;
+
+  // check whether the email is in db
+  const existingUser = await users.findOne({ email });
+
+  if (existingUser) {
+    // if present, check password
+    const token = jwt.sign(
+      { userMail: existingUser.email, role: existingUser.role },
+      process.env.JWTSECRET,
+    );
+
+    res.status(200).json({ user: existingUser, token });
+  } else {
+    // if not present, register user
+    let encryptPassword = await bcrypt.hash(password, 10);
+    const newUser = await users.create({
+      username,
+      email,
+      password: encryptPassword,
+      picture,
+    });
+
+    const token = jwt.sign(
+      { userMail: newUser.email, role: newUser.role },
+      process.env.JWTSECRET,
+    );
+
+    res.status(200).json({ user: newUser, token });
+  }
+};
