@@ -1,5 +1,6 @@
 const users = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // register
 exports.registerController = async (req, res) => {
@@ -19,5 +20,41 @@ exports.registerController = async (req, res) => {
       password: encryptPassword,
     });
     res.status(201).json(newUser);
+  }
+};
+
+// login
+exports.loginController = async (req, res) => {
+  console.log("Inside loginController");
+  const { email, password } = req.body;
+
+  // check whether the email is in db
+  const existingUser = await users.findOne({ email });
+
+  if (existingUser) {
+    // if present, check password
+    const isPasswordMatch = await bcrypt.compare(
+      password,
+      existingUser.password,
+    );
+
+    if (isPasswordMatch) {
+      const token = jwt.sign(
+        { userMail: email, role: existingUser.role },
+        process.env.JWTSECRET,
+      );
+
+      res.status(200).json({
+        user: existingUser,
+        token,
+      });
+    } else {
+      res.status(409).json("Invalid Email / Password!!");
+    }
+  } else {
+    // if not present
+    res
+      .status(409)
+      .json("Invalid Email... Please Register to access the Bookstore!!");
   }
 };
