@@ -99,5 +99,28 @@ exports.userEditController = async (req, res) => {
   console.log("Inside userEditController");
 
   console.log(req.body);
-  res.status(200).json("Recieved userEdit request");
+  console.log(req.file);
+  console.log(req.payload);
+  console.log(req.params);
+
+  const { id } = req.params;
+  const email = req.payload;
+  const { username, password, bio, role } = req.body;
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  const updatePicture = req.file ? req.file.filename : picture;
+
+  const updateUser = await users.findByIdAndUpdate(
+    { _id: id },
+    {
+      username,
+      email,
+      password: encryptedPassword,
+      picture: updatePicture,
+      bio,
+      role,
+    },
+    { new: true },
+  );
+
+  res.status(200).json(updateUser);
 };

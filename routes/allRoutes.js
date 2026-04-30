@@ -1,6 +1,7 @@
 const express = require("express");
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
+const multerMiddleware = require("../middlewares/multerMiddleware");
 
 // to setup routes outside express server, create an object for the Router class of express
 const router = new express.Router();
@@ -14,7 +15,14 @@ router.post("/login", userController.loginController);
 // google login
 router.post("/google-login", userController.googleLoginController);
 
+// ----------------------AUTHORISED USER-------------------
+
 // user edit
-router.put("/user/:id", authMiddleware, userController.userEditController);
+router.put(
+  "/user/:id",
+  authMiddleware,
+  multerMiddleware.single("picture"),
+  userController.userEditController,
+);
 
 module.exports = router;
