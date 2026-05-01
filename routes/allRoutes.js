@@ -2,6 +2,7 @@ const express = require("express");
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const multerMiddleware = require("../middlewares/multerMiddleware");
+const bookController = require("../controllers/bookController");
 
 // to setup routes outside express server, create an object for the Router class of express
 const router = new express.Router();
@@ -23,6 +24,14 @@ router.put(
   authMiddleware,
   multerMiddleware.single("picture"),
   userController.userEditController,
+);
+
+// add book
+router.post(
+  "/books",
+  authMiddleware,
+  multerMiddleware.array("uploadImages", 3),
+  bookController.addBookController,
 );
 
 module.exports = router;
