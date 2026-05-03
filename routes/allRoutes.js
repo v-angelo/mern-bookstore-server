@@ -16,6 +16,9 @@ router.post("/login", userController.loginController);
 // google login
 router.post("/google-login", userController.googleLoginController);
 
+// get homeBooks
+router.get("/home-books", bookController.getHomePageBookController);
+
 // ----------------------AUTHORISED USER-------------------
 
 // user edit

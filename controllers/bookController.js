@@ -65,6 +65,12 @@ exports.addBookController = async (req, res) => {
 };
 
 // get latest books: get 4 latest books
+exports.getHomePageBookController = async (req, res) => {
+  console.log("Inside getHomePageBookController");
+
+  const homeBooks = await books.find().sort({ _id: -1 }).limit(4);
+  res.status(200).json(homeBooks);
+};
 
 // get all user uploaded books: diplay all books ignoring current user
 
