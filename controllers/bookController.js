@@ -105,6 +105,14 @@ exports.getUserBoughtBooksController = async (req, res) => {
 // remove book by a user
 
 // get a single book to view
+exports.getSingleBookController = async (req, res) => {
+  console.log("Inside getSingleBookController");
+
+  const { bookID } = req.params;
+  const bookDetails = await books.findById(bookID);
+
+  res.status(200).json(bookDetails);
+};
 
 // get all books: at admin resource page
 

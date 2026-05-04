@@ -19,6 +19,9 @@ router.post("/google-login", userController.googleLoginController);
 // get homeBooks
 router.get("/home-books", bookController.getHomePageBookController);
 
+// get book details
+router.get("/book-details/:bookID", bookController.getSingleBookController);
+
 // ----------------------AUTHORISED USER-------------------
 
 // user edit
