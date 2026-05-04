@@ -72,11 +72,35 @@ exports.getHomePageBookController = async (req, res) => {
   res.status(200).json(homeBooks);
 };
 
-// get all user uploaded books: diplay all books ignoring current user
+// get all books apart from login user: diplay all books ignoring current user
+exports.getBooksPageController = async (req, res) => {
+  console.log("Inside getBooksPageController");
+
+  const loginUserMail = req.payload;
+  const allBooks = await books.find({ sellerMail: { $ne: loginUserMail } });
+
+  res.status(200).json(allBooks);
+};
 
 // get user profile books: diplay books uploaded by current user
+exports.getUserBooksController = async (req, res) => {
+  console.log("Inside getUserBooksController");
+
+  const loginUserMail = req.payload;
+  const userUploadBooks = await books.find({ sellerMail: loginUserMail });
+
+  res.status(200).json(userUploadBooks);
+};
 
 // get user bought books: display books bought by current user
+exports.getUserBoughtBooksController = async (req, res) => {
+  console.log("Inside getUserBooksController");
+
+  const loginUserMail = req.payload;
+  const userBoughtBooks = await books.find({ buyerMail: loginUserMail });
+
+  res.status(200).json(userBoughtBooks);
+};
 
 // remove book by a user
 

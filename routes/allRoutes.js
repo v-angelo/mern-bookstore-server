@@ -37,4 +37,21 @@ router.post(
   bookController.addBookController,
 );
 
+// get booksPage
+router.get("/all-books", authMiddleware, bookController.getBooksPageController);
+
+// get userUploadBooks
+router.get(
+  "/user-books",
+  authMiddleware,
+  bookController.getUserBooksController,
+);
+
+// get userBoughtBooks
+router.get(
+  "/bought-books",
+  authMiddleware,
+  bookController.getUserBoughtBooksController,
+);
+
 module.exports = router;
