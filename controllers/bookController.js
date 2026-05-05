@@ -77,7 +77,11 @@ exports.getBooksPageController = async (req, res) => {
   console.log("Inside getBooksPageController");
 
   const loginUserMail = req.payload;
-  const allBooks = await books.find({ sellerMail: { $ne: loginUserMail } });
+  const searchKey = req.query.search;
+  const allBooks = await books.find({
+    sellerMail: { $ne: loginUserMail },
+    title: { $regex: searchKey, $options: "i" },
+  });
 
   res.status(200).json(allBooks);
 };
@@ -103,6 +107,14 @@ exports.getUserBoughtBooksController = async (req, res) => {
 };
 
 // remove book by a user
+exports.removeUserUploadBookController = async (req, res) => {
+  console.log("Inside removeUserUploadBookController");
+
+  const { id } = req.params;
+  const removeBook = await books.findByIdAndDelete({ _id: id });
+
+  res.status(200).json(removeBook);
+};
 
 // get a single book to view
 exports.getSingleBookController = async (req, res) => {

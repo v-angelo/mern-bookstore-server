@@ -57,4 +57,11 @@ router.get(
   bookController.getUserBoughtBooksController,
 );
 
+// remove user upload books
+router.delete(
+  "/books/:id",
+  authMiddleware,
+  bookController.removeUserUploadBookController,
+);
+
 module.exports = router;
