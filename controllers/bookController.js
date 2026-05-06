@@ -1,4 +1,5 @@
 const books = require("../models/bookModel");
+const stripe = require("stripe")(process.env.STRIPE_SK);
 
 // add book
 exports.addBookController = async (req, res) => {
@@ -131,3 +132,51 @@ exports.getSingleBookController = async (req, res) => {
 // update book status: at admin page
 
 // book payment
+exports.bookPaymentController = async (req, res) => {
+  console.log("Inside bookPaymentController");
+
+  const buyerMail = req.payload;
+  const { id } = req.params;
+  const bookDetails = await books.findById({ _id: id });
+
+  bookDetails.status = "sold";
+  bookDetails.buyerMail = buyerMail;
+
+  // checkout session logic
+  const line_items = [
+    {
+      price_data: {
+        currency: "usd",
+
+        product_data: {
+          name: bookDetails.title,
+          description: `${bookDetails.author}, ${bookDetails.publisher}`,
+          images: bookDetails.uploadImages,
+          metadata: {
+            title: bookDetails.title,
+            author: bookDetails.author,
+            price: bookDetails.discountPrice,
+          },
+        },
+
+        unit_amount: Math.round(bookDetails.discountPrice * 100),
+      },
+
+      quantity: 1,
+    },
+  ];
+
+  const session = await stripe.checkout.sessions.create({
+    success_url: "http://localhost:5173/success",
+    cancel_url: "http://localhost:5173/cancel",
+    line_items,
+    mode: "payment",
+    payment_method_types: ["card"],
+  });
+
+  console.log(session);
+
+  session.url && (await bookDetails.save());
+
+  res.status(200).json({ checkOutURL: session.url });
+};

@@ -94,9 +94,9 @@ exports.googleLoginController = async (req, res) => {
   }
 };
 
-// user edit
+// user/admin edit
 exports.userEditController = async (req, res) => {
-  console.log("Inside userEditController");
+  console.log("Inside admin/userEditController");
 
   console.log(req.body);
   console.log(req.file);
