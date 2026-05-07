@@ -82,4 +82,17 @@ router.put(
   userController.userEditController,
 );
 
+// all users list
+router.get("/user-list", adminMiddleware, userController.getAllUsersController);
+
+// all books list
+router.get("/book-list", adminMiddleware, bookController.getAllBookController);
+
+// update books status
+router.put(
+  "/books/:id",
+  adminMiddleware,
+  bookController.updateBookStatusController,
+);
+
 module.exports = router;

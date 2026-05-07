@@ -105,9 +105,10 @@ exports.userEditController = async (req, res) => {
 
   const { id } = req.params;
   const email = req.payload;
-  const { username, password, bio, role } = req.body;
+  const { username, password, role, picture } = req.body;
   const encryptedPassword = await bcrypt.hash(password, 10);
   const updatePicture = req.file ? req.file.filename : picture;
+  console.log(updatePicture);
 
   const updateUser = await users.findByIdAndUpdate(
     { _id: id },
@@ -116,11 +117,19 @@ exports.userEditController = async (req, res) => {
       email,
       password: encryptedPassword,
       picture: updatePicture,
-      bio,
       role,
     },
     { new: true },
   );
 
   res.status(200).json(updateUser);
+};
+
+// get all users
+exports.getAllUsersController = async (req, res) => {
+  console.log("Inside getAllUsersController");
+
+  const allUsers = await users.find({ role: { $ne: "admin" } });
+
+  res.status(200).json(allUsers);
 };
