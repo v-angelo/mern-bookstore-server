@@ -1,5 +1,6 @@
 const books = require("../models/bookModel");
 const stripe = require("stripe")(process.env.STRIPE_SK);
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // add book
 exports.addBookController = async (req, res) => {
@@ -196,4 +197,26 @@ exports.bookPaymentController = async (req, res) => {
   session.url && (await bookDetails.save());
 
   res.status(200).json({ checkOutURL: session.url });
+};
+
+// get book content using gemini api
+exports.generateBookDetailsAIController = async (req, res) => {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+  const { title } = req.body;
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash",
+  });
+
+  const result = await model.generateContent(
+    `Give me a short abstract and author name of the book ${title} in json format. If the book does not exist, return a book not found in json format`,
+  );
+  const reply = result.response;
+  console.log(reply);
+
+  res.status(200).json({
+    success: true,
+    user: title,
+    content: reply.candidates[0].content.parts[0].text,
+  });
 };

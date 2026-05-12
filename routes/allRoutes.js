@@ -72,6 +72,13 @@ router.put(
   bookController.bookPaymentController,
 );
 
+// get book details using ai
+router.post(
+  "/books-ai",
+  authMiddleware,
+  bookController.generateBookDetailsAIController,
+);
+
 // ----------------------AUTHORISED USER: ADMIN-------------------
 
 // admin profile edit
